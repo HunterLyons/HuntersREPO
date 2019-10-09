@@ -1,28 +1,30 @@
 #include <kipr/botball.h>
 int l_motor = 3;
 int r_motor = 0;
-int pause = 1000;
+int pause = 850;
 int maxspd = 100;
-int halfspd = 50;
+int halfspd = 60;
 int count = 0;
-int lpause = 5000;
+int lpause = 3000;
+int finish = 300.0;
+int lbump = 0;
+int rbump = 9;
+int limit = 5;
 int main()
 {
-  shut_down_in(300);
+  shut_down_in(finish); //shutdown in 5 mins
   
-  while(1){
+  while(1){				//The Main loop
     forward();
-    if(count == 5){
+    if(count == limit){ // The Evasive Manuver if statement
       r_turn();
       count = 0;
     }
-    	if(digital(0) || digital(9)){
+    	if(digital(lbump) || digital(rbump)){ //the main bump check if statement
       ao();
-      m(pause);
+      msleep(pause);
       backward();
-      msleep(pause);
-      l_turn();
-      msleep(pause);
+      l_turn();		//calls the left turn function
       ao();
       msleep(pause);
       count++;
@@ -31,6 +33,7 @@ int main()
   }
     return 0;
 }
+
 
 
 //funtion Definitions//
@@ -42,16 +45,21 @@ void forward(){
 void backward(){
   motor(r_motor,-halfspd);
   motor(l_motor,-halfspd);
+  msleep(pause);
 }
 
 void l_turn(){
+  printf("weave\n");
   motor(r_motor,-halfspd);
   motor(l_motor,halfspd);
+  msleep(pause);
 }
 
 void r_turn(){
+  printf("miss me with that\n");
   motor(r_motor,halfspd);
   motor(l_motor,-halfspd);
   msleep(lpause);
   ao();
+  msleep(pause);
 }
