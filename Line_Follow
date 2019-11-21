@@ -1,0 +1,92 @@
+#include <kipr/botball.h>
+
+int l_motor = 3;
+int r_motor = 0;
+int pause = 500;
+int slowspd = 20;
+int halfspd = 40;
+int count = 0;
+int lpause = 3000;
+int finish = 300.0;
+int f_sensor = 0;
+int t_sensor = 5;
+int f_target = 2605;
+int t_target = 4000;
+int arm = 1;
+int arm_pos = 1510;
+int arm_revert = 550;
+int arm_not = 1030;
+
+int main(){
+    printf("Executing: World_Domination.exc\n");
+  findline();
+  linefollow();
+  
+    wave_servo();
+  	wave_servo();
+  	wave_servo();
+  	wave_servo();
+  	set_servo_position(arm,arm_not);	
+       msleep(pause);
+  	disable_servos();
+    
+    return 0;
+}
+
+
+//funtion Definitions//
+void forward(){
+ motor(r_motor,halfspd);
+ motor(l_motor,halfspd);
+}
+
+void l_turn(){
+  printf("weave\n");
+  motor(r_motor,halfspd);
+  motor(l_motor,-30);
+  msleep(pause);
+}
+
+
+void r_veer(){
+  printf("r veer\n");
+  motor(r_motor,-slowspd);
+  motor(l_motor,halfspd);
+  ao();
+}
+
+
+void l_veer(){
+  printf("l veer\n");
+  motor(r_motor,halfspd);
+  motor(l_motor,-slowspd);
+  ao();
+}
+
+void linefollow(){
+  while(analog(f_sensor) <= f_target){
+  forward();
+   if(analog(t_sensor) >= t_target ){
+     	l_veer();
+  } 
+    
+    if(analog(t_sensor) <= t_target){
+    	r_veer();
+   }
+}
+  ao();
+}
+
+void wave_servo(){
+  enable_servos();							//turn on all servos
+  set_servo_position(arm,arm_pos);			//servo in port 0 to halfway point
+       msleep(pause);						//pause to let servo move
+  set_servo_position(arm,arm_revert);		//servo in port 0 back to original position
+       msleep(pause);
+}
+
+void findline(){
+  while(analog(t_sensor) <= t_target){
+    forward();
+  }
+}
