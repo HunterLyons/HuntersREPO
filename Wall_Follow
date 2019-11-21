@@ -1,0 +1,71 @@
+#include <kipr/botball.h>
+
+int l_motor = 3;
+int r_motor = 0;
+int pause = 835;
+int slowspd = 40;
+int halfspd = 60;
+int count = 0;
+int lpause = 3000;
+int finish = 300.0;
+int lbump = 0;
+int rbump = 9;
+int limit = 5;
+int f_sensor = 0;
+int s_sensor = 2;
+int f_target = 2605;
+int s_maxtarget = 2200;
+int s_mintarget = 1720;
+
+int main(){
+    printf("Executing: World_Domination.exc\n");
+  wallfollow();
+  
+    l_turn();
+    
+  wallfollow();
+    return 0;
+}
+
+
+//funtion Definitions//
+void forward(){
+ motor(r_motor,halfspd);
+ motor(l_motor,halfspd);
+}
+
+void l_turn(){
+  printf("weave\n");
+  motor(r_motor,halfspd);
+  motor(l_motor,-30);
+  msleep(pause);
+}
+
+
+void r_veer(){
+  printf("r veer\n");
+  motor(r_motor,slowspd);
+  motor(l_motor,halfspd);
+  ao();
+}
+
+
+void l_veer(){
+  printf("l veer\n");
+  motor(r_motor,halfspd);
+  motor(l_motor,slowspd);
+  ao();
+}
+
+void wallfollow(){
+  while(analog(f_sensor) <= f_target){
+  forward();
+   if(analog(s_sensor) >= s_maxtarget ){
+     	l_veer();
+   } 
+    
+    if(analog(s_sensor) <= s_mintarget){
+    	r_veer();
+   }
+}
+}
