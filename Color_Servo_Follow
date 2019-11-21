@@ -1,0 +1,28 @@
+#include <kipr/botball.h>
+
+int l_motor = 0;
+int r_motor = 3;
+int low_speed = 5;
+int speed = 80;
+int mid_speed = 45;
+int green = 0;
+int pink = 1; 
+int orange = 2; 
+int servo = 1;
+
+int main(){
+  
+    camera_open();
+    while(1){
+        camera_update();
+        enable_servos();
+        if (get_object_count(green) > 0){
+        printf("number of green = %d\n", get_object_count(green));				//Detects if there is a green pom
+        }
+        if (get_object_center_x(green, 0)){
+            set_servo_position(servo, get_object_center_x(green,0) * 10);		//sets the servo position based off the location of the pom
+        }
+    }
+    
+    return 0;
+}
