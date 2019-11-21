@@ -1,0 +1,60 @@
+#include <kipr/botball.h>
+
+int l_motor = 3;
+int r_motor = 0;
+int pause = 500;
+int slowspd = 20;
+int halfspd = 40;
+int count = 0;
+int lpause = 3000;
+int finish = 300.0;
+int f_sensor = 0;
+int t_sensor = 5;
+int f_target = 2605;
+int t_target = 4000;
+int camera = 2;
+int arm = 1;
+int arm_pos = 1700;
+int arm_not = 320;
+int arm_revert = 1015;
+int green = 0;
+int red = 2;
+int blue = 3;
+int target = 10; 
+int midy = 60;
+int midx = 80;
+
+//Functions Decs
+void print_green(){
+  printf("The color is: GREEN\n");  
+}
+
+void print_blue(){
+  printf("The color is: BLUE\n");  
+}
+
+void print_red(){
+  printf("The color is: RED\n");  
+}
+
+int main(){
+  camera_open();
+  
+  while(digital(8)==0){
+ 
+    camera_update();
+    
+    if(get_object_count(green) > 0){ //looks for Green
+	print_green();
+    }
+    
+    if(get_object_count(blue) > 0){  //looks for Blue
+	print_blue();
+    }
+    
+    if(get_object_count(red) > 0){ //looks for Red
+	print_red();
+    }
+  }   
+return 0;
+	}
