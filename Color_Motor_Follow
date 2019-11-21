@@ -1,0 +1,67 @@
+#include <kipr/botball.h>
+
+int r_motor = 0;
+int l_motor = 3;
+int low_speed = 5;
+int speed = 80;
+int mid_speed = 45;
+int green = 0;
+int pink = 1; 
+int orange = 2; 
+int servo = 1;
+int pause = 500;
+int slowspd = 20;
+int halfspd = 40;
+int count = 0;
+int lpause = 3000;
+int finish = 300.0;
+int f_sensor = 0;
+int t_sensor = 5;
+int f_target = 2605;
+int t_target = 4000;
+int arm = 1;
+int arm_pos = 1510;
+int arm_revert = 550;
+int arm_not = 1030;
+
+int main(){
+  camera_open();
+  while(digital(8)==0){
+    camera_update();
+    if(get_object_center_x(green, 0) <= 80){  //detects if green is to the left
+    	l_veer();
+      	printf("weave left\n");
+    }
+    if(get_object_center_x(green,0) > 80){    //detects if green is to the right
+    	r_veer();
+      	printf("weave right\n");
+    }
+    if(get_object_center_y(green,0) > 90){	  //stops if green is 90 pixels away
+    	printf("success\n");
+      	ao();
+      break;
+    }
+  }
+  
+    return 0;
+}
+
+
+//funtion Definitions//
+void forward(){
+ motor(r_motor,halfspd); 
+ motor(l_motor,halfspd);
+}
+
+void r_veer(){
+  printf("r veer\n");
+  motor(r_motor,halfspd);
+  motor(l_motor,speed);
+}
+
+
+void l_veer(){
+  printf("l veer\n");
+  motor(r_motor,speed);
+  motor(l_motor,halfspd);
+}
