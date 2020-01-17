@@ -1,0 +1,233 @@
+File: main.c
+
+#include <kipr/botball.h>
+
+int scoop = 2;
+
+int arm = 1;
+
+int arm_close = 1600;
+
+int arm_open = 20;
+
+int arm_high = 870;
+
+int scoop_max = 1600;
+
+int scoop_min = 0;
+
+int scoop_mid = 800;
+
+int pause = 1000;
+
+int s_pause = 500;
+
+int l_pause = 2500;
+
+int r_motor = 3;
+
+int l_motor = 0;
+
+int speed = 50;
+
+int s_speed = 20;
+
+int q_speed = 80;
+
+int s_sens = 1;
+
+int f_sens = 3;
+
+int l_tophat = 5;
+
+int r_tophat = 0;
+
+int ir_black = 3880;
+
+int ir_gray = 3700;
+
+int ir_white = 3460;
+
+int f_target = 2200;
+
+int s_target = 2900;
+
+​
+
+int main(){
+
+ /* 
+
+  while(analog(l_tophat) < ir_black){
+
+    forward();
+
+    printf("looking for black line\n");
+
+  }
+
+  ao();
+
+    printf("found black line\n");
+
+  
+
+  while(analog(l_tophat) > ir_black){
+
+    forward();
+
+    printf("looking for white\n");
+
+  }
+
+  ao();
+
+    printf("found white\n");
+
+*/
+
+  enable_servos();
+
+  set_servo_position(scoop, scoop_max);
+
+ 
+
+  forward();
+
+  msleep(l_pause);
+
+  
+
+  while(analog(l_tophat) < ir_gray){
+
+    r_veer();
+
+    printf("looking for gray line\n");
+
+  }
+
+  ao();
+
+    printf("found gray line\n");
+
+  
+
+  msleep(s_pause);
+
+  
+
+  gray_linefollow();
+
+​
+
+    return 0;
+
+}
+
+​
+
+// functions
+
+​
+
+void forward(){
+
+ motor(r_motor,speed);
+
+ motor(l_motor,speed);
+
+}
+
+​
+
+void l_turn(){
+
+  printf("weave\n");
+
+  motor(r_motor,speed);
+
+  motor(l_motor,-30);
+
+  msleep(pause);
+
+}
+
+​
+
+​
+
+void r_veer(){
+
+  printf("r veer\n");
+
+  motor(r_motor,speed);
+
+  motor(l_motor,s_speed);
+
+}
+
+​
+
+​
+
+void l_veer(){
+
+  printf("l veer\n");
+
+  motor(r_motor,s_speed);
+
+  motor(l_motor,speed);
+
+}
+
+​
+
+void gray_linefollow(){
+
+  while(analog(f_sens) <= f_target){
+
+  forward();
+
+   if(analog(l_tophat) >= ir_gray ){
+
+        l_veer();
+
+  } 
+
+    
+
+    if(analog(l_tophat) <= ir_gray){
+
+        r_veer();
+
+   }
+
+}
+
+  ao();
+
+}
+
+​
+
+Project Explorer
+Add Project
+Hello World
+Hunner Cyst_3.0
+Hunner Cyst_4.0
+HunnerCyst_2.0
+Poobonic Plague
+Power_Lines
+	Include Files
+		Add File
+	Source Files
+		main.c
+		Add File
+	User Data Files
+		Add File
+Pubic Hair
+sciatica
+
+Copyright © 2015 KISS Insitute for Practical Robotics
+
+20 %    100 %   
