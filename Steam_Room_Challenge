@@ -1,0 +1,275 @@
+#include <kipr/botball.h>
+
+int scoop = 0;
+int t_arm = 1;
+int t_arm_close = 1600;
+int t_arm_open = 20;
+int arm = 2;
+int arm_max = 1000;
+int arm_mid = 630;
+int arm_past = 1320;
+int scoop_max = 290;
+int scoop_min = 1620;
+int scoop_mid = 870;
+int pause = 1000;
+int s_pause = 500;
+int l_pause = 2500;
+int r_motor = 3;
+int l_motor = 0;
+int speed = 40;
+int s_speed = 10;
+int q_speed = 70;
+int s_sens = 1;
+int f_sens = 3;
+int bump = 3;
+int l_tophat = 5;
+int r_tophat = 0;
+int ir_black = 2800;
+int ir_gray = 240;
+int ir_white = 210;
+int f_target = 2200;
+int f_target_close = 2913;
+int s_target_far = 2500;
+int s_target_close = 2910;
+
+int main()
+{													
+    wait_for_light(4);								//start when light turns on; turn of in 2 minutes
+    shut_down_in(120.0);
+   
+    enable_servo(arm);
+    printf("reset\n");
+    set_servo_position(arm, arm_max);				//lift arm to normal position
+    msleep(s_pause);
+    
+    while(analog(f_sens) < f_target){				//follow the side pvc until it the end of the table towards power lines
+        wall_follow();
+     }
+    
+        stop();
+    
+    while(analog(r_tophat) < ir_black){
+     	l_turn();   								//turn left to be parallel to the side wall of the table
+    }
+    
+    	stop(); 
+    
+    enable_servo(arm);								//lower arm forwards
+    halfway();
+    	stop();
+    
+    forward();
+    msleep(s_pause-150);
+    
+    printf("\n");									//veer right a little bit (mlsleep)
+    motor(r_motor,speed+10);						//DOUBLE CHECK THIS
+    motor(l_motor,speed-11);
+    msleep(s_pause);						
+    
+    enable_servo(arm);								//lift the arm back up to starting position, catch the first power line
+    lift();
+    
+    while(analog(l_tophat) < ir_black){				//veer backwards
+        rev_r_veer();
+    } 
+    	stop();
+   
+    backward();
+    msleep(s_pause-250);
+    												//back up more with msleeps to the perfect position
+    rev_l_veer();
+    msleep(pause+200);
+    
+    	stop();
+    
+    enable_servo(arm);
+    set_servo_position(arm, 1050);					//lift arm a little bit further, connect the power line
+    printf("arm_max");
+    msleep(s_pause);
+    
+    	stop();
+    
+    enable_servo(arm);
+    printf("halfway - 1\n");						
+    set_servo_position(arm, 820);					//lower arm again to "let go" of the line
+    msleep(s_pause);
+    	
+    	stop();
+    
+    l_veer();
+    printf("l veer\n");								//veer left away from power line
+    msleep(pause);
+    
+    	stop();
+    
+    r_veer();
+    printf("r_veer");
+    msleep(s_pause);
+    
+    while(analog(r_tophat) < ir_black){
+        wall_follow();								//follow side wall towards second power line
+     }
+    															
+        stop();
+     
+    enable_servo(arm);
+    printf("reset\n");
+    set_servo_position(arm, arm_max);				//reset arm
+    msleep(pause);
+  
+    enable_servo(arm);
+    halfway();										//lower arm
+    printf("halfway - 2\n");
+    msleep(s_pause);
+    
+    enable_servo(arm);
+    printf("lower arm\n");							//lower arm more
+    set_servo_position(arm, 590);
+    msleep(s_pause);
+    
+    r_turn();
+    msleep(pause+700);								//turn towards power line
+    
+    	stop();
+    
+    l_veer();										//veer away to "catch" line
+    msleep(pause-400);
+    
+    enable_servo(arm);								//lift the arm back up to pull the power line
+    lift();
+    
+    r_veer();
+    msleep(s_pause-200);
+    
+    forward();
+    msleep(s_pause);								//move forard with veers to connect second power line
+    
+    r_veer();
+    msleep(s_pause-250);
+
+    l_veer();
+    msleep(s_pause-250);
+    	stop();
+    
+   r_veer();
+    msleep(s_pause-250);
+
+    l_veer();
+    msleep(s_pause-250);
+    	stop();
+ 
+return 0;
+}
+
+//Functions
+
+void forward(){
+ printf("forward\n");
+ motor(r_motor,speed);
+ motor(l_motor,speed);
+}
+
+void backward(){
+ printf("backward\n");
+ motor(r_motor,-speed);
+ motor(l_motor,-speed);   
+}
+
+void l_turn(){
+  printf("weave right\n");
+  motor(r_motor,-35);
+  motor(l_motor,speed);
+}
+
+void r_turn(){
+  printf("weave left\n");
+  motor(r_motor,speed);
+  motor(l_motor,15);  
+}
+
+void r_veer(){
+  printf("r veer\n");
+  motor(r_motor,speed);
+  motor(l_motor,s_speed);
+}
+
+void r_veer_2(){
+  printf("r veer 2\n");
+  motor(r_motor, speed);
+  motor(l_motor, -s_speed+20);
+}
+
+void l_veer(){
+  printf("l veer\n");
+  motor(r_motor,s_speed);
+  motor(l_motor,speed);
+}
+
+void rev_r_veer() {
+  printf("reverse r veer\n");
+  motor(l_motor,-speed+35);
+  motor(r_motor,-speed);
+}
+
+void rev_l_veer() {
+  printf("reverse l veer\n");
+  motor(l_motor,-speed);
+  motor(r_motor,0);
+}
+
+void wall_follow() {
+   if(analog(s_sens) > s_target_far) {
+            l_veer();
+            printf("too_close\n");
+        }
+        if(analog(s_sens) < s_target_far) {
+            r_veer();
+            printf("too_far\n");
+        }  
+}
+
+void wall_follow_2() {
+   if(analog(s_sens) > s_target_close) {
+            l_veer();
+            printf("too_close\n");
+        }
+        if(analog(s_sens) < s_target_close) {
+            r_veer();
+            printf("too_far\n");
+        }  
+}
+
+void stop() {
+  ao();
+  msleep(s_pause);  
+}
+
+void halfway() {
+  enable_servo(arm);
+  arm_max = 1000;
+  set_servo_position(arm, arm_max);
+  msleep(pause);
+  arm_mid = 640;
+    while(arm_max > arm_mid){
+        set_servo_position(arm, arm_max);
+        msleep(50);
+        arm_max = arm_max - 50;
+    }
+    set_servo_position(arm, arm_mid);
+    msleep(pause);
+}
+
+void lift() {
+ 	enable_servo(arm);
+    arm_mid = 640;
+    set_servo_position(arm, arm_mid);
+    msleep(pause);
+     arm_max = 1000;
+     printf("servo_pos = %d\n", get_servo_position(arm));
+   while(arm_mid < arm_max){
+      	set_servo_position(arm, arm_mid);
+        msleep(50);
+        arm_mid = arm_mid + 50;
+       printf("servo_pos = %d\n", get_servo_position(arm));
+  }
+}
