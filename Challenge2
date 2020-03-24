@@ -1,0 +1,42 @@
+// Created on Sat March 21 2020
+int l_motor = 0;
+int r_motor = 2;
+int mid_sense = 1;
+
+//funtions
+void forward(){
+	motor(l_motor, 50);
+	motor(r_motor, 50);
+	msleep(2000);
+	}
+	
+void rturn(){
+	motor(l_motor, 50);
+	motor(r_motor, 0);
+	msleep(900);
+	}
+	
+void lturn(){
+	motor(l_motor, 0);
+	motor(r_motor, 50);
+	msleep(1800);
+	}
+	
+void find_wall(){
+	while(digital(8) == 0){
+		forward();
+	if(digital(8) == 1){
+		break;
+		}
+	}
+}
+
+int main()
+{
+	forward();
+	rturn();
+	find_wall();
+	lturn();
+	
+	return 0;
+}
