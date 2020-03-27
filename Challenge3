@@ -1,0 +1,83 @@
+// Created on Sat March 21 2020
+int l_motor = 0;
+int r_motor = 2;
+int mid_sense = 1;
+int l_sense = 5;
+int r_sense = 6;
+
+//funtions
+void forward(){
+	printf("forward\n");
+	motor(l_motor, 50);
+	motor(r_motor, 50);
+	}
+	
+void rturn(){
+	printf("right turn\n");
+	motor(l_motor, 50);
+	motor(r_motor, 0);
+	}
+	
+void backward(){
+	printf("backward\n");
+	motor(l_motor, -50);
+	motor(r_motor, -50);
+	}
+	
+void lturn(){
+	printf("left turn\n");
+	motor(l_motor, 0);
+	motor(r_motor, 50);
+	msleep(1800);
+	}
+	
+void lveer(){
+	printf("left veer\n");
+	motor(l_motor, 0);
+	motor(r_motor, 50);
+}
+
+void rveer(){
+	printf("right veer\n");
+	motor(l_motor, 50);	
+	motor(r_motor, 0);
+}
+	
+void find_wall(){
+	while(1){
+		printf("finding wall\n");
+		forward();
+		if(digital(8) == 1 || digital(9) == 1){					//looks for the first wall
+			printf("sup\n");
+			break;
+		}
+	}
+}
+
+void line_follow(){
+	while(digital(8) == 0 || digital(9) == 0){
+		printf("line follow\n");
+		rveer();
+			if(analog(l_sense) > 0){							//This keeps the tape the left left sensor
+				lveer();
+			}
+			if(analog(r_sense) > 0){
+					rveer();
+			}
+		}
+	}
+
+int main()
+{
+	forward();
+	msleep(2000);
+	rturn();
+	msleep(710);
+	find_wall();
+	backward();													//the flow of all the functions
+	msleep(1000);
+	lturn();
+	line_follow();
+	ao();
+	return 0;
+}
