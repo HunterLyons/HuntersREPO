@@ -1,0 +1,108 @@
+// Created on Sat March 21 2020
+int l_motor = 0;
+int r_motor = 2;
+int mid_sense = 1;
+int l_sense = 5;
+int r_sense = 6;
+int l_bump = 8;
+int r_bump = 9;
+
+//funtions
+void forward(){
+	printf("forward\n");
+	motor(l_motor, 50);													//a simple forwards function
+	motor(r_motor, 50);
+	}
+	
+void rturn(){
+	printf("right turn\n");
+	motor(l_motor, 50);													//a simple right turn function
+	motor(r_motor, 0);
+	}
+	
+void backward(){
+	printf("backward\n");
+	motor(l_motor, -50);													//a simple backwards function
+	motor(r_motor, -50);
+	}
+	
+void lturn(){
+	printf("left turn\n");
+	motor(l_motor, 0);														//a simple left turn function
+	motor(r_motor, 50);
+	msleep(1800);
+	}
+	
+void lveer(){
+	printf("left veer\n");
+	motor(l_motor, 00);														//this is responsible for the left veer of the line follow
+	motor(r_motor, 60);
+	msleep(200);
+}
+
+void rveer(){
+	printf("right veer\n");
+	motor(l_motor, 60);														//this is responsible for the right veer of the line follow
+	motor(r_motor, 0);
+	msleep(200);
+}
+	
+void find_wall(){
+	while(1){
+		printf("finding wall\n");
+		forward();
+		if(digital(l_bump) == 1 || digital(r_bump) == 1){					//looks for the first wall
+			printf("sup\n");
+			break;
+		}
+	}
+}
+
+void line_follow(){
+	while(digital(l_bump) == 0 || digital(r_bump) == 0){
+		printf("line follow\n");
+		forward();
+			if(analog(l_sense) > 10){							//This keeps the tape the left left sensor
+				lveer();
+			}
+			if(analog(r_sense) > 10){
+					rveer();
+			}
+		}
+	}
+	
+void line_follow2(){
+	while(1){
+		printf("line follow\n");
+		forward();
+			if(analog(l_sense) > 0){							//This keeps the tape the left left sensor
+				lveer();
+			}
+			if(analog(r_sense) > 0){
+					rveer();
+			}
+			if(analog(r_sense) > 0 && analog(l_sense) > 0){
+					break;
+			}
+		}
+	}
+
+
+int main()
+{
+	forward();
+	msleep(1700);
+	rturn();
+	msleep(740);
+	find_wall();
+	backward();													//the flow of all the functions
+	msleep(1000);
+	lturn();
+	line_follow();
+	backward();
+	msleep(1000);
+	lturn();
+	line_follow2();
+	ao();
+	return 0;
+}
