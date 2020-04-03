@@ -1,0 +1,86 @@
+// Created on Thu April 2 2020
+int l_motor = 0;
+int r_motor = 2;
+int mid_sense = 1;
+int l_sense = 0;
+int r_sense = 2;
+int l_bump = 8;
+int r_bump = 9;
+int r_refl = 6;
+int l_refl = 5;
+int count = 0;
+int flag = 0;
+
+//Functions
+void forward(){
+	printf("forward\n");
+	motor(l_motor, 50);													//a simple forwards function
+	motor(r_motor, 50);
+	}
+	
+void rturn(){
+	printf("right turn\n");
+	motor(l_motor, 50);													//a simple right turn function
+	motor(r_motor, 0);
+	}
+	
+void backward(){
+	printf("backward\n");
+	motor(l_motor, -50);													//a simple backwards function
+	motor(r_motor, -50);
+	}
+	
+void lturn(){
+	printf("left turn\n");
+	motor(l_motor, 0);														//a simple left turn function
+	motor(r_motor, 50);
+	msleep(1800);
+	}
+	
+void lveer(){
+	printf("left veer\n");
+	motor(l_motor, 20);														//this is responsible for the left veer of the line follow
+	motor(r_motor, 80);
+	msleep(100);
+}
+
+void rveer(){
+	printf("right veer\n");
+	motor(l_motor, 80);														//this is responsible for the right veer of the line follow
+	motor(r_motor, 20);
+	msleep(100);
+}
+
+void wall_follow(){
+	while(1){
+		forward();
+		printf("count = %d\n", count);
+			if(analog(r_sense) > 350){
+				rveer();
+			}
+			if(analog(r_sense) < 350){
+				lveer();
+			}
+			if(analog(r_refl) > 0 && flag == 0){							//follows the wall with the right range sensor, and counts how many black lines it passes
+				count++;
+				flag = 1;
+				msleep(230);
+			}
+			if(analog(r_refl) > 0 && flag == 1){
+				flag = 0;
+				msleep(230);
+			}
+				
+			if(count == 4){
+				break;
+			}
+		}
+}
+	
+int main()
+{
+	wall_follow();
+	forward();																//The functions the robot follows
+	msleep(1000);
+	return 0;
+}
